@@ -3,8 +3,8 @@ import numpy as np
 from scipy.interpolate import PchipInterpolator
 from scipy.signal import convolve
 
-from mrxcat import MRXCAT
-from MRXCAT_CMR_PERF.perf_par import PERFpar
+from pymrxcat.mrxcat import MRXCAT
+from pymrxcat.MRXCAT_CMR_PERF.perf_par import PERFpar
 
 
 class MRXCAT_CMR_PERF(MRXCAT):
@@ -332,3 +332,7 @@ class MRXCAT_CMR_PERF(MRXCAT):
         # Scale the result by factor q
         c_result = q * c_result
         return c_result
+    
+    
+def main():
+    MRXCAT_CMR_PERF()

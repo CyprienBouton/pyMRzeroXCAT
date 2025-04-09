@@ -2,8 +2,8 @@ import numpy as np
 from skimage.measure import label, regionprops
 from pynufft import NUFFT
 
-from mrxcat import MRXCAT
-from MRXCAT_CMR_CINE.cine_par import CINEpar
+from pymrxcat.mrxcat import MRXCAT
+from pymrxcat.MRXCAT_CMR_CINE.cine_par import CINEpar
 
 class MRXCAT_CMR_CINE(MRXCAT):
 
@@ -309,3 +309,7 @@ class MRXCAT_CMR_CINE(MRXCAT):
         # Implement based on specific formula for radial trajectory
         # For simplicity, return a mock array of the trajectory
         return np.ones((prof, samp))  # Mock radial trajectory
+    
+    
+def main():
+    MRXCAT_CMR_CINE()
