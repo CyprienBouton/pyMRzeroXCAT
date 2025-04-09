@@ -1,0 +1,27 @@
+[project]
+name = "pymrxcat"
+version = "0.1.0"
+description = "Python version of MRXCAT Matlab repository"
+authors = [
+    {name = "Cyprien Bouton cyprien.bouton@creatis.insa-lyon.fr"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "2.2.4"
+pynufft = "2025.1.1"
+scikit-image = "0.25.2"
+matplotlib = "3.10.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+mrxcat_cine = "pymrxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
+mrxcat_perf = "pymrxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
