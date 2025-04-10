@@ -25,3 +25,4 @@ build-backend = "poetry.core.masonry.api"
 [project.scripts]
 mrxcat_cine = "pymrxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
 mrxcat_perf = "pymrxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
+mrxcat_visualize = "pymrxcat.visualize:main"
