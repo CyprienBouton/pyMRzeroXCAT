@@ -313,3 +313,7 @@ class MRXCAT_CMR_CINE(MRXCAT):
     
 def main():
     MRXCAT_CMR_CINE()
+
+
+if __name__ == '__main__':
+    main()

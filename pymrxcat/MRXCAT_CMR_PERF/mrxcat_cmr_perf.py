@@ -336,3 +336,7 @@ class MRXCAT_CMR_PERF(MRXCAT):
     
 def main():
     MRXCAT_CMR_PERF()
+
+    
+if __name__ == '__main__':
+    main()
