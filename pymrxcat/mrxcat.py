@@ -107,7 +107,7 @@ class MRXCAT:
             with open(fname, "rb") as fid:
                 img = np.fromfile(fid, dtype=np.float32)
                 matrix_size = self.Par["scan"]["matrix"]
-                img = img.reshape((matrix_size, matrix_size, -1), order='F').copy()
+                img = img.reshape((matrix_size, matrix_size, -1), order='F')
                 
                 return img  # Could apply bounding box cropping here if necessary
         except FileNotFoundError:
@@ -182,9 +182,9 @@ class MRXCAT:
                 # Vector from all voxels to coil centre
                 X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
                 imrot = np.dot(invr, np.vstack([X.ravel(order='F'), Y.ravel(order='F'), Z.ravel(order='F')]))
-                X = np.reshape(imrot[0, :] - ci[1], (len(x), len(y), len(z)), order='F').copy()
-                Y = np.reshape(imrot[1, :] - ci[0], (len(x), len(y), len(z)), order='F').copy()
-                Z = np.reshape(imrot[2, :] - ci[2], (len(x), len(y), len(z)), order='F').copy()
+                X = np.reshape(imrot[0, :] - ci[1], (len(x), len(y), len(z)), order='F')
+                Y = np.reshape(imrot[1, :] - ci[0], (len(x), len(y), len(z)), order='F')
+                Z = np.reshape(imrot[2, :] - ci[2], (len(x), len(y), len(z)), order='F')
                 X = np.repeat(X[..., np.newaxis], angles, axis=3)
                 Y = np.repeat(Y[..., np.newaxis], angles, axis=3)
                 Z = np.repeat(Z[..., np.newaxis], angles, axis=3)
@@ -378,7 +378,7 @@ class MRXCAT:
             np.ndarray: The coil-encoded image volume with shape (X, Y, Z, coils).
         """
         coils = self.Par["scan"]["coils"]
-        sen = sen.reshape(img.shape[0], img.shape[1], img.shape[2], coils, order='F').copy()
+        sen = sen.reshape(img.shape[0], img.shape[1], img.shape[2], coils, order='F')
         img = np.repeat(img[..., np.newaxis], coils, axis=3)
         img = img * sen
         return img
@@ -413,7 +413,7 @@ class MRXCAT:
 
             # Reshape to 3D
             matrix_size = self.Par["scan"]["matrix"]
-            img = img_flat.reshape((matrix_size, matrix_size, -1), order='F').copy()
+            img = img_flat.reshape((matrix_size, matrix_size, -1), order='F')
 
             # Crop using bounding box
             xdim, ydim, zdim = self.compute_bounding_box()
