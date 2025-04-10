@@ -158,3 +158,7 @@ def extract_signal_time_curves(data, filename):
 
 def main():
     display_mrxcat()
+
+
+if __name__ == "__main__":
+    main()
