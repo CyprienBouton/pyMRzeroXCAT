@@ -304,13 +304,20 @@ class MRXCAT_PHANTOM_LGE(MRXCAT):
         """
         fname = self.generate_filename(msk)
         fphantom = f"{fname}_phantom.npz"
+        # one frame for each RR cycle
+        time_points = np.arange(self.Par['scan']['frames'])*self.Par['scan']['trrc']
+        # get tissues mask
+        tissues = {}
+        for tis, act in self.Par['act'].items():
+            tissues['tissue_'+tis] = msk==act
         np.savez_compressed(
             fphantom,
-            rho_map=rho_map,
-            msk=msk,
-            t1_maps=np.stack(t1_maps, -1),
-            t2_maps=np.stack(t2_maps, -1),
-            sen=sen,
+            PD_map=rho_map,
+            T1_map=np.stack(t1_maps),
+            T2_map=np.stack(t2_maps),
+            coil_sens=sen,
+            time_points=time_points,
+            **tissues
         )
 
     @staticmethod

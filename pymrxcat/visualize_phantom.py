@@ -21,10 +21,10 @@ def display_phantom_data(fname=None, plot_result=True):
     phantom_data = np.load(fname)
     
     # Extract the data from the .npz file
-    rho_map = phantom_data['rho_map']
-    t1_maps = phantom_data['t1_maps']
-    t2_maps = phantom_data['t2_maps']
-    sen = phantom_data['sen']
+    rho_map = phantom_data['PD_map']
+    t1_maps = np.moveaxis(phantom_data['T1_map'], 0, -1)
+    t2_maps = np.moveaxis(phantom_data['T2_map'], 0, -1)
+    sen = phantom_data['coil_sens']
     
     
     # Display 4-panel figure showing time frame, slices, coil images, and (for perf) example signal-time curves
