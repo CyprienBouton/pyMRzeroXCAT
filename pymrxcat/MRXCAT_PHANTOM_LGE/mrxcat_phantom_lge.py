@@ -7,6 +7,24 @@ from pymrxcat.mrxcat import MRXCAT
 from pymrxcat.MRXCAT_PHANTOM_LGE.lge_par import LGEpar
 
 
+def img_to_matlab_style(img: np.ndarray, channel_axis=0):
+    """Convert image from NumPy format to MATLAB-style format.
+    Handles both 3D and 4D images, with flexible channel axis.
+    
+    Args:
+    - img (np.ndarray): The input image (3D or 4D NumPy array).
+    - channel_axis (int): The axis corresponding to channels in a 4D image (default=0).
+    
+    Returns:
+    - np.ndarray: The converted image in MATLAB-style format (with shape adjusted).
+    """
+    if img.ndim==3:
+        return np.flip(img,0).transpose(1,0,2)
+    else:
+        img = np.moveaxis(img, channel_axis, 0)
+        return np.flip(img,1).transpose(0,2,1,3)
+
+
 class MRXCAT_PHANTOM_LGE(MRXCAT):
     def __init__(self, filename='', *args):
         super().__init__()
@@ -309,13 +327,15 @@ class MRXCAT_PHANTOM_LGE(MRXCAT):
         # get tissues mask
         tissues = {}
         for tis, act in self.Par['act'].items():
-            tissues['tissue_'+tis] = msk==act
+            tissues['tissue_'+tis] = img_to_matlab_style(msk==act)
+        T1_map = np.stack(t1_maps)*1e-3 # convert values to seconds
+        T2_map = np.stack(t2_maps)*1e-3 # convert values to seconds
         np.savez_compressed(
             fphantom,
-            PD_map=rho_map,
-            T1_map=np.stack(t1_maps),
-            T2_map=np.stack(t2_maps),
-            coil_sens=sen,
+            PD_map=img_to_matlab_style(rho_map),
+            T1_map=img_to_matlab_style(T1_map),
+            T2_map=img_to_matlab_style(T2_map),
+            coil_sens=img_to_matlab_style(sen,-1),
             time_points=time_points,
             **tissues
         )
