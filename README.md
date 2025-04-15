@@ -66,4 +66,4 @@ with the command `mrxcat_phantom_lge`.
 5.	To display the produced phantom, run `mrxcat_visualize_phantom` and select
 	the *.npz file in the file selection dialog.
 
-![MRzero Phantom](MRXCAT_Phantom/perf.ng)
+![MRzero Phantom](visualize/MRXCAT_Phantom.ng)
