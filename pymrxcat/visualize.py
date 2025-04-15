@@ -114,14 +114,16 @@ def display_movie(data, subplotno, loops=3, dt=0.1, scale=(None, None)):
             plt.subplot(gridsizex, gridsizey, image_pos_no)
             plt.imshow(data[:, :, imageno], cmap='gray', vmin=minint, vmax=maxint)
             plt.title(f'{imageno + 1}/{number_images}')
-            plt.axis('off')
+            plt.xticks([])
+            plt.yticks([])
             plt.pause(dt)
 
     imageno = number_images // 2
     plt.subplot(gridsizex, gridsizey, image_pos_no)
     plt.imshow(data[:, :, imageno], cmap='gray', vmin=minint, vmax=maxint)
     plt.title(f'{imageno + 1}/{number_images}')
-    plt.axis('off')
+    plt.xticks([])
+    plt.yticks([])
 
 def extract_signal_time_curves(data, filename):
     msk_filename = filename.replace('.cpx', '.msk')
