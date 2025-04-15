@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
 import os
+import io
+from PIL import Image
 
 def display_mrxcat(fname=None, plot_result=True):
     if fname is None or not os.path.isfile(fname):
@@ -53,7 +55,7 @@ def display_mrxcat(fname=None, plot_result=True):
         
         # Display time frames
         plt.subplot(2, 2, 1)
-        display_movie(np.abs(sos[:, :, sos.shape[2]//2, :]), [2, 2, 1], 1, 0.2)
+        display_movie(np.abs(sos[:, :, sos.shape[2]//2, :]), [2, 2, 1], 1, 0.3)
         plt.title('Time frames')
 
         # Display slices
@@ -84,7 +86,7 @@ def display_mrxcat(fname=None, plot_result=True):
     
     return data, fname
 
-def display_movie(data, subplotno, loops=3, dt=0.1, scale=(None, None)):
+def display_movie(data, subplotno, loops=3, dt=0.1, scale=(None, None), gif_filename=None):
     number_images = data.shape[2]
     image_pos_no = 1
 
@@ -108,7 +110,10 @@ def display_movie(data, subplotno, loops=3, dt=0.1, scale=(None, None)):
     if maxint == minint:
         maxint += 1
         minint -= 1
-
+    
+    fig = plt.gcf()
+    frames = []
+    
     for loop in range(loops):
         for imageno in range(number_images):
             plt.subplot(gridsizex, gridsizey, image_pos_no)
@@ -117,7 +122,27 @@ def display_movie(data, subplotno, loops=3, dt=0.1, scale=(None, None)):
             plt.xticks([])
             plt.yticks([])
             plt.pause(dt)
-
+            
+            if gif_filename:
+                # Get current subplot axis and its extent
+                ax = plt.gca()
+                buf = io.BytesIO()
+                fig.savefig(buf, format='png', bbox_inches=ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted()))
+                buf.seek(0)
+                frames.append(Image.open(buf).convert('RGB'))
+                buf.close()
+    
+    # Save as GIF
+    if gif_filename and frames:
+        frames[0].save(
+            gif_filename,
+            save_all=True,
+            append_images=frames[1:],
+            duration=int(dt * 1000),
+            loop=0
+        )
+        print(f"GIF saved to {gif_filename}")
+        
     imageno = number_images // 2
     plt.subplot(gridsizex, gridsizey, image_pos_no)
     plt.imshow(data[:, :, imageno], cmap='gray', vmin=minint, vmax=maxint)
