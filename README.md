@@ -17,7 +17,7 @@ Python version of the MRXCAT MATLAB repository.
    ```
 4. Install the project in editable mode and its dependencies:
    ```bash
-   pip install -e .
+   pip install .
    ```
 
 Several new commands will be added to the virtual environment once the installation is completed.
@@ -43,5 +43,8 @@ These commands all start with `mrxcat_`.
 	*.noi		MRXCAT noise only
 	*_par.mat	MRXCAT parameters
     
-6.	To display the produced phantom, run mrxcat_display; and select
+6.	To display the produced phantom, run `mrxcat_display`; and select
 	the *.cpx file in the file selection dialog.
+
+![Myocardial perfusion](images/algorithm_animation.gif)
+![Cardiac cine](images/algorithm_animation.gif)
