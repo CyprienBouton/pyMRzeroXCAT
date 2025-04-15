@@ -28,13 +28,13 @@ These commands all start with `mrxcat_`.
 1. 	Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
 	After downloading, extract the contents and add them to this repository.
 
-2. 	Adapt the MRXCAT parameters in pymrxcat/MRXCAT_CMR_CINE/mrxcat_cmr_cine.py and pymrxcat/MRXCAT_CMR_PERF/mrxcat_cmr_perf.py to your needs. 
+2. 	Adapt the MRXCAT parameters in *pymrxcat/MRXCAT_CMR_CINE/mrxcat_cmr_cine.py* and *pymrxcat/MRXCAT_CMR_PERF/mrxcat_cmr_perf.py* to your needs. 
 	For a first try, go with the predefined parameters.
 
-4.	Start cine or perfusion MRXCAT by typing
+3.	   Start cine or perfusion MRXCAT by typing
 	`mrxcat_cine` or `mrxcat_perf` into the command line.
     
-5. 	Select the first XCAT .bin file from the cine and perfusion datasets
+4. 	Select the first XCAT .bin file from the cine and perfusion datasets
 	(cine_act_1.bin for cine, perfusion_act_1.bin for perfusion). 
 	Once the simulation is done, you get the following files:
 	*.cpx		MRXCAT phantom data
@@ -43,8 +43,25 @@ These commands all start with `mrxcat_`.
 	*.noi		MRXCAT noise only
 	*_par.mat	MRXCAT parameters
     
-6.	To display the produced phantom, run `mrxcat_display`; and select
+5.	   To display the produced phantom, run `mrxcat_display` and select
 	the *.cpx file in the file selection dialog.
 
-![Myocardial perfusion](visuals/cine.gif)
+![Myocardial perfusion](visuals/cine.gif) <br>
 ![Cardiac cine](visuals/perf.gif)
+
+## Build MRzero dynamic Phantom
+1. 	Ask binary  from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
+
+2.    Adapt the MRXCAT parameters in *pymrxcat/MRXCAT_PHANTOM_LGE/lge_par.py* to your needs. 
+	For a first try, go with the predefined parameters.
+
+3.    Create a MRzero [Phantom](https://mrzero-core.readthedocs.io/en/latest/api/phantom.html#voxel-grid-phantom) 
+with the command `mrxcat_phantom_lge`.
+
+4. Select the first XCAT .bin file from the lge dataset.
+   Once the simulation is done, you get the following files:
+   *_par.mat	MRXCAT parameters
+   *.npz MRzero **DynamicVoxelPhantom**
+
+5.	   To display the produced phantom, run `mrxcat_visualize_phantom` and select
+	the *.npz file in the file selection dialog.
