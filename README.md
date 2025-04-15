@@ -1,6 +1,13 @@
 # pyMRXCAT
 Python version of the MRXCAT MATLAB repository.
 
+# Table of Contents
+
+- [Install](#install)
+- [Run CINE and PERF models](#run-cine-and-perf-models)
+- [Build MRzero Phantom](#build-mrzero-phantom)
+- [References](#references)
+
 ## Install
 
 1. Download the repository:
@@ -49,7 +56,8 @@ These commands all start with `mrxcat_`.
 ![Myocardial perfusion](visuals/cine.gif) <br>
 ![Cardiac cine](visuals/perf.gif)
 
-## Build MRzero dynamic Phantom
+## Build MRzero Phantom
+
 1. Ask binary  from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
 
 2. Adapt the MRXCAT parameters in *pymrxcat/MRXCAT_PHANTOM_LGE/lge_par.py* to your needs. 
@@ -67,3 +75,7 @@ with the command `mrxcat_phantom_lge`.
 	the *.npz file in the file selection dialog.
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
+
+## References
+If you use this code fo research, please cite the following paper 
+[Wissmann L, Santelli C, Segars WP, Kozerke S. MRXCAT: Realistic Numerical Phantoms for Cardiovascular Magnetic Resonance. J Cardiovasc Magn Reson 2014;16:63.](https://pubmed.ncbi.nlm.nih.gov/25204441/)
