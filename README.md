@@ -46,5 +46,5 @@ These commands all start with `mrxcat_`.
 6.	To display the produced phantom, run `mrxcat_display`; and select
 	the *.cpx file in the file selection dialog.
 
-![Myocardial perfusion](images/algorithm_animation.gif)
-![Cardiac cine](images/algorithm_animation.gif)
+![Myocardial perfusion](visuals/cine.gif)
+![Cardiac cine](visuals/perf.gif)
