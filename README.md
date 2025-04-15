@@ -50,7 +50,7 @@ These commands all start with `mrxcat_`.
 	*.noi		MRXCAT noise only
 	*_par.mat	MRXCAT parameters
     
-5.	   To display the produced phantom, run `mrxcat_display` and select
+5. To display the produced phantom, run `mrxcat_display` and select
 	the *.cpx file in the file selection dialog.
 
 ![Myocardial perfusion](visuals/cine.gif) <br>
@@ -58,7 +58,7 @@ These commands all start with `mrxcat_`.
 
 ## Build MRzero Phantom
 
-1. Ask binary  from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
+1. Ask binary files from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
 
 2. Adapt the MRXCAT parameters in *pymrxcat/MRXCAT_PHANTOM_LGE/lge_par.py* to your needs. 
 	For a first try, go with the predefined parameters.
@@ -69,7 +69,7 @@ with the command `mrxcat_phantom_lge`.
 4. Select the first XCAT .bin file from the lge dataset.
    Once the simulation is done, you get the following files:
    *_par.mat	MRXCAT parameters
-   *.npz MRzero **DynamicVoxelPhantom**
+   *.npz MRzero parameter file to initialize a **DynamicVoxelPhantom**
 
 5.	To display the produced phantom, run `mrxcat_visualize_phantom` and select
 	the *.npz file in the file selection dialog.
@@ -77,5 +77,5 @@ with the command `mrxcat_phantom_lge`.
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
 
 ## References
-If you use this code fo research, please cite the following paper 
+If you use this code for research, please cite the following paper 
 [Wissmann L, Santelli C, Segars WP, Kozerke S. MRXCAT: Realistic Numerical Phantoms for Cardiovascular Magnetic Resonance. J Cardiovasc Magn Reson 2014;16:63.](https://pubmed.ncbi.nlm.nih.gov/25204441/)
