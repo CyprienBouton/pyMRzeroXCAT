@@ -6,6 +6,7 @@ Python version of the MRXCAT MATLAB repository.
 - [Install](#install)
 - [Run CINE and PERF models](#run-cine-and-perf-models)
 - [Build MRzero Phantom](#build-mrzero-phantom)
+- [Example in Jupyter Notebook](#example-in-jupyter-notebook)
 - [References](#references)
 
 ## Install
@@ -75,6 +76,9 @@ with the command `mrxcat_phantom_lge`.
 	the *.npz file in the file selection dialog.
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
+
+## Example in Jupyter Notebook
+A basic example of a Flash 2D sequence simulation using the MRXCAT phantom in MRzero framework can be found [here](examples/simulate_MRXCAT_Flash2D.ipynb).
 
 ## References
 If you use this code for research, please cite the following paper 
