@@ -45,11 +45,11 @@ These commands all start with `mrxcat_`.
 4. 	Select the first XCAT .bin file from the cine and perfusion datasets
 	(cine_act_1.bin for cine, perfusion_act_1.bin for perfusion). 
 	Once the simulation is done, you get the following files:
-	*.cpx		MRXCAT phantom data
-	*.msk		XCAT mask data
-	*.sen		MRXCAT coil sensitivity maps
-	*.noi		MRXCAT noise only
-	*_par.mat	MRXCAT parameters
+	- *.cpx		MRXCAT phantom data
+	- *.msk		XCAT mask data
+	- *.sen		MRXCAT coil sensitivity maps
+	- *.noi		MRXCAT noise only
+	- *_par.mat	MRXCAT parameters
     
 5. To display the produced phantom, run `mrxcat_display` and select
 	the *.cpx file in the file selection dialog.
@@ -69,8 +69,8 @@ with the command `mrxcat_phantom_lge`.
 
 4. Select the first XCAT .bin file from the lge dataset.
    Once the simulation is done, you get the following files:
-   *_par.mat	MRXCAT parameters
-   *.npz MRzero parameter file to initialize a **DynamicVoxelPhantom**
+   - *_par.mat	MRXCAT parameters
+   - *.npz MRzero parameter file to initialize a **DynamicVoxelPhantom**
 
 5.	To display the produced phantom, run `mrxcat_visualize_phantom` and select
 	the *.npz file in the file selection dialog.
