@@ -1,4 +1,4 @@
-# pymrzeroxcat
+# pyMRzeroXCAT
 Python version of the MRXCAT MATLAB repository.
 
 # Table of Contents
@@ -15,7 +15,7 @@ Python version of the MRXCAT MATLAB repository.
    ```bash
    # clone project
    git clone https://github.com/CyprienBouton/pymrzeroxcat
-   cd pymrzeroxcat
+   cd pyMRzeroXCAT
    ```
 2. Create a virtual environment (Conda is strongly recommended):
    ```bash
@@ -36,7 +36,8 @@ These commands all start with `mrxcat_`.
 1. Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
 	After downloading, extract the contents and add them to this repository.
 
-2. Adapt the MRXCAT parameters in *pymrzeroxcat/MRXCAT_CMR_CINE/mrxcat_cmr_cine.py* and *pymrzeroxcat/MRXCAT_CMR_PERF/mrxcat_cmr_perf.py* to your needs. 
+2. Adapt the MRXCAT parameters in <span style="color:blue">pyMRzeroXCAT/MRXCAT_CMR_CINE/mrxcat_cmr_cine.py</span>
+ and <span style="color:blue">pyMRzeroXCAT/MRXCAT_CMR_PERF/mrxcat_cmr_perf.py</span> to your needs. 
 	For a first try, go with the predefined parameters.
 
 3. Start cine or perfusion MRXCAT by typing
@@ -61,7 +62,7 @@ These commands all start with `mrxcat_`.
 
 1. Ask binary files from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
 
-2. Adapt the MRXCAT parameters in *pymrzeroxcat/MRXCAT_PHANTOM_LGE/lge_par.py* to your needs. 
+2. Adapt the MRXCAT parameters in <span style="color:blue">pyMRzeroXCAT/MRXCAT_PHANTOM_LGE/lge_par.py</span> to your needs. 
 	For a first try, go with the predefined parameters.
 
 3. Create a MRzero [Phantom](https://mrzero-core.readthedocs.io/en/latest/api/phantom.html#voxel-grid-phantom) 
