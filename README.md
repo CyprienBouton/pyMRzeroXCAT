@@ -36,8 +36,8 @@ These commands all start with `mrxcat_`.
 1. Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
 	After downloading, extract the contents and add them to this repository.
 
-2. Adapt the MRXCAT parameters in [MRXCAT_CMR_CINE/mrxcat_cmr_cine.py](pymrzeroxcat/MRXCAT_CMR_CINE/mrxcat_cmr_cine.py)
- and [MRXCAT_CMR_PERF/mrxcat_cmr_perf.py](pymrzeroxcat/MRXCAT_CMR_PERF/mrxcat_cmr_perf.py) to your needs. 
+2. Adapt the MRXCAT parameters in [MRXCAT_CMR_CINE/cine_par.py](pymrzeroxcat/MRXCAT_CMR_CINE/cine_par.py)
+ and [MRXCAT_CMR_PERF/perf_par.py](pymrzeroxcat/MRXCAT_CMR_PERF/perf_par.py) to your needs. 
 	For a first try, go with the predefined parameters.
 
 3. Start cine or perfusion MRXCAT by typing
