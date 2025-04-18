@@ -78,8 +78,8 @@ with the command `mrxcat_phantom_lge`.
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
 
 <p align="center">
-  <img src="visuals/T1_map.gif" alt="Dynamic T1 map" width="50%" />
-  <img src="visuals/T2_map.gif" alt="Dynamic T2 map" width="50%" />
+  <img src="visuals/T1_map.gif" alt="Dynamic T1 map" width="49%" />
+  <img src="visuals/T2_map.gif" alt="Dynamic T2 map" width="49%" />
 </p>
 
 ## Example in Jupyter Notebook
