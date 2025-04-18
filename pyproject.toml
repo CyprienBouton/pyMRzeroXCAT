@@ -1,5 +1,5 @@
 [project]
-name = "pymrxcat"
+name = "pymrzeroxcat"
 version = "0.1.0"
 description = "Python version of MRXCAT Matlab repository"
 authors = [
@@ -23,8 +23,8 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
-mrxcat_cine = "pymrxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
-mrxcat_perf = "pymrxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
-mrxcat_phantom_lge="pymrxcat.MRXCAT_PHANTOM_LGE.mrxcat_phantom_lge:main"
-mrxcat_visualize = "pymrxcat.visualize:main"
-mrxcat_visualize_phantom = "pymrxcat.visualize_phantom:main"
+mrxcat_cine = "pymrzeroxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
+mrxcat_perf = "pymrzeroxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
+mrxcat_phantom_lge="pymrzeroxcat.MRXCAT_PHANTOM_LGE.mrxcat_phantom_lge:main"
+mrxcat_visualize = "pymrzeroxcat.visualize:main"
+mrxcat_visualize_phantom = "pymrzeroxcat.visualize_phantom:main"

@@ -3,8 +3,8 @@ import numpy as np
 from scipy.interpolate import PchipInterpolator
 from scipy.signal import convolve
 
-from pymrxcat.mrxcat import MRXCAT
-from pymrxcat.MRXCAT_CMR_PERF.perf_par import PERFpar
+from pymrzeroxcat.mrxcat import MRXCAT
+from pymrzeroxcat.MRXCAT_CMR_PERF.perf_par import PERFpar
 
 
 class MRXCAT_CMR_PERF(MRXCAT):

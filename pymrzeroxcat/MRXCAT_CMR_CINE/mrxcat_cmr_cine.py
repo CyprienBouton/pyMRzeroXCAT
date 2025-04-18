@@ -2,8 +2,8 @@ import numpy as np
 from skimage.measure import label, regionprops
 from pynufft import NUFFT
 
-from pymrxcat.mrxcat import MRXCAT
-from pymrxcat.MRXCAT_CMR_CINE.cine_par import CINEpar
+from pymrzeroxcat.mrxcat import MRXCAT
+from pymrzeroxcat.MRXCAT_CMR_CINE.cine_par import CINEpar
 
 class MRXCAT_CMR_CINE(MRXCAT):
 

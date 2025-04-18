@@ -3,8 +3,8 @@ import numpy as np
 from scipy.interpolate import PchipInterpolator
 from scipy.signal import convolve
 
-from pymrxcat.mrxcat import MRXCAT
-from pymrxcat.MRXCAT_PHANTOM_LGE.lge_par import LGEpar
+from pymrzeroxcat.mrxcat import MRXCAT
+from pymrzeroxcat.MRXCAT_PHANTOM_LGE.lge_par import LGEpar
 
 
 def img_to_matlab_style(img: np.ndarray, channel_axis=0):

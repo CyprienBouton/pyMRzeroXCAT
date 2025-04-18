@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-from pymrxcat.visualize import display_movie
+from pymrzeroxcat.visualize import display_movie
 
 def display_phantom_data(fname=None, plot_result=True):
     if fname is None or not os.path.isfile(fname):
