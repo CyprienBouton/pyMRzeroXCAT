@@ -57,7 +57,7 @@ def LGEpar(MRX, filename=None):
     Nky0 = max(np.floor((Tsat-70)/TR),1)  # Number excitations to ky0 (70 ms: eff. prepulse delay)
     Frames = 32            # Number of dynamics (default: 32)
     
-    BoundingBox = np.array([[0.0, 0.7], [0.2, 0.8], [0.0, 1.0]])  # BoundingBox in relative units
+    BoundingBox = np.array([[0.1, 0.5], [0.2, 0.8], [0.0, 1.0]])  # BoundingBox in relative units
     RotationXYZ = np.array([115.0, 35.0, 240.0])  # Rotation angles around x, y, z [deg]
 
     CropProfs = 0          # Crop profiles along x around heart (Recon time)
