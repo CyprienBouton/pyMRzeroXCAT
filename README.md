@@ -77,6 +77,9 @@ with the command `mrxcat_phantom_lge`.
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
 
+![Dynamic T1 map](visuals/T1_map.gif)
+![Dynamic T2 map](visuals/T2_map.gif)
+
 ## Example in Jupyter Notebook
 A basic example of a Flash 2D sequence simulation using the MRXCAT phantom in MRzero framework can be found [here](examples/simulate_MRXCAT_Flash2D.ipynb).
 
