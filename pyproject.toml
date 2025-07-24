@@ -17,6 +17,7 @@ numpy = "2.2.4"
 pynufft = "2025.1.1"
 scikit-image = "0.25.2"
 matplotlib = "3.10.1"
+mrtwin = "0.1.3"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -25,6 +26,6 @@ build-backend = "poetry.core.masonry.api"
 [project.scripts]
 mrxcat_cine = "pymrzeroxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
 mrxcat_perf = "pymrzeroxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
-mrxcat_phantom_lge="pymrzeroxcat.MRXCAT_PHANTOM_LGE.mrxcat_phantom_lge:main"
+mrxcat_phantom_lge="pymrzeroxcat.MRXCAT_PHANTOM_LGE.build_static_phantom:main"
 mrxcat_visualize = "pymrzeroxcat.visualize:main"
 mrxcat_visualize_phantom = "pymrzeroxcat.visualize_phantom:main"
