@@ -244,7 +244,7 @@ def main():
     parser.add_argument('-B0', '--field_strength', help='Field strength in Tesla (default: 1.5)', type=float, default=1.5)
     parser.add_argument('--plot', help='Whether to plot the phantom (default: True)', action=argparse.BooleanOptionalAction, default=True)
     
-    parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [[0.,1.]]*3", type=float, nargs='+', default=[0.2, 0.7, 0.6, 0.9, 0., 1.])
+    parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [0.2, 0.7, 0.6, 0.9, 0., 1.]", type=float, nargs='+', default=[0.2, 0.7, 0.6, 0.9, 0., 1.])
     parser.add_argument('-r', '--resolution', help='Resolution of the phantom (Nx, Ny, Nz)', type=int, nargs=3)
     
     parser.add_argument('--ncoils', help='Number of coils for sensitivity map', type=int, default=8)    
