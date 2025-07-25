@@ -2,7 +2,7 @@ import numpy as np
 from scipy.ndimage import zoom
 import re
 import json
-from mrtwin import b0field, b1field
+from mrtwin import b0field, b1field, sensmap
 import argparse
 from ast import literal_eval
 
@@ -174,12 +174,24 @@ def build_static_phantom(
     plot=True, 
     bbox=np.array([[0., 1.]]*3), 
     resolution=None,
+    ncoils=8,
     b0field_kwargs={}, 
-    b1field_kwargs={}, 
-
+    b1field_kwargs={},
+    sensmap_kwargs={}, 
 ):
     """
     Build a static phantom for LGE MRI.
+    Parameters:
+        bin_file (str): Path to the binary file containing the phantom data.
+        phantom_file (str): Output file path for the generated phantom.
+        field_strength (float): Magnetic field strength in Tesla.
+        plot (bool): Whether to plot the phantom after generation.
+        bbox (np.ndarray): Bounding box for the phantom in the format [[x_min, x_max], [y_min, y_max], [z_min, z_max]].
+        resolution (tuple): Resolution of the phantom in mm/pixel (Nx, Ny, Nz).
+        ncoils (int): Number of coils for the sensitivity map.
+        b0field_kwargs (dict): Keyword arguments for the B0 field computation.
+        b1field_kwargs (dict): Keyword arguments for the B1 field computation.
+        sensmap_kwargs (dict): Keyword arguments for the sensitivity map computation
     """
     t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, bbox, resolution)
     
@@ -198,6 +210,10 @@ def build_static_phantom(
     B1_map = b1field(**b1field_kwargs)
     if B1_map.ndim==2:
         B1_map = np.expand_dims(B1_map, axis=2)
+    
+    # Compute sensitivity map
+    sensmap_kwargs['shape'] = (ncoils,) + rho_map.shape
+    coil_sens = sensmap(**sensmap_kwargs)
 
     np.savez_compressed(
         phantom_file,
@@ -209,6 +225,7 @@ def build_static_phantom(
         B0_map=B0_map,
         B1_map=B1_map,
         FOV=(0.2, 0.2, 0.2),
+        coil_sens=coil_sens,
     )
     print(f"Static phantom saved to {phantom_file}")
     
@@ -230,8 +247,10 @@ def main():
     parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [[0.,1.]]*3", type=float, nargs='+', default=[0.2, 0.7, 0.6, 0.9, 0., 1.])
     parser.add_argument('-r', '--resolution', help='Resolution of the phantom (Nx, Ny, Nz)', type=int, nargs=3)
     
-    parser.add_argument('--b0_kwargs', help='Keyword arguments passed to `b0field()`', type=parse_key_value, nargs='*', default=[])
-    parser.add_argument('--b1_kwargs', help='Keyword arguments passed to `b1field()`', type=parse_key_value, nargs='*', default=[])
+    parser.add_argument('--ncoils', help='Number of coils for sensitivity map', type=int, default=8)    
+    parser.add_argument('--b0_kwargs', help="Keyword arguments passed to `mrtwin.b0field()`.", type=parse_key_value, default={}, nargs='+')
+    parser.add_argument('--b1_kwargs', help="Keyword arguments passed to `mrtwin.b1field()`.", type=parse_key_value, default={}, nargs='+')
+    parser.add_argument('--sensmap_kwargs', help="Keyword arguments passed to `mrtwin.sensmap()`.", type=parse_key_value, default={}, nargs='+')
 
     args = parser.parse_args()
 
@@ -241,6 +260,7 @@ def main():
     # Convert key-value pairs to dictionaries
     b0_kwargs = dict(args.b0_kwargs)
     b1_kwargs = dict(args.b1_kwargs)
+    sensmap_kwargs = dict(args.sensmap_kwargs)
     
     # Call your phantom generator
     build_static_phantom(
@@ -251,7 +271,8 @@ def main():
         bbox=bbox,
         resolution=args.resolution,
         b0field_kwargs=b0_kwargs,
-        b1field_kwargs=b1_kwargs
+        b1field_kwargs=b1_kwargs,
+        sensmap_kwargs=sensmap_kwargs,
     )
 
 if __name__ == "__main__":
