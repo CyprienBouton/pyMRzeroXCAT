@@ -1,10 +1,13 @@
+import os
 import numpy as np
 from scipy.ndimage import zoom
-import re
 import json
 from mrtwin import b0field, b1field, sensmap
 import argparse
 from ast import literal_eval
+
+from pymrzeroxcat.read_mrxcat_raw_data import get_tissues_id, get_resolution, get_segmentation
+
 
 DEFAULT_T1 = 900    # ms (muscle, organs)
 DEFAULT_T2 = 50     # ms (muscle, soft tissue)
@@ -13,62 +16,20 @@ DEFAULT_RHO = 85.0    # Between muscle (80) and liver (90)
 DEFAULT_CHI = -9.0    # Typical soft tissue susceptibility (ppm)
 DEFAULT_tissues_param_json = 'pymrzeroxcat/MRXCAT_PHANTOM_LGE/tissues.json'
 
+
 def parse_key_value(arg):
     try:
         key, value = arg.split('=')
         return key, literal_eval(value)
     except ValueError:
         raise argparse.ArgumentTypeError(f"Arguments must be in key=value format: got '{arg}'")
-    
-
-def search_key_log(log_file, key):
-    """
-    Search for a key in the log file and return its value.
-    """
-    with open(log_file, 'r') as fid:
-        for line in fid:
-            if key in line:
-                # Remove text in parentheses at the end, e.g., (cm/pixel)
-                line = re.sub(r'\s*\([^)]*\)\s*$', '', line)
-                value =  line.split()[-1]
-                if value.isdigit():
-                    return int(value)
-                elif value.replace('.', '', 1).isdigit():
-                    return float(value)
-                else:
-                    return value
-    raise ValueError(f"Key '{key}' not found in log file.")
 
 
-def get_segmentation(bin_file, log_file, flip_horizontal=True):
-    matrix = search_key_log(log_file, 'array_size')
-    seg = np.fromfile(bin_file, dtype=np.float32).astype(np.int32)
-    seg = seg.reshape(-1, matrix, matrix).transpose(1, 2, 0)
-    if flip_horizontal:
-        seg = np.flip(seg, axis=1)
-    return seg
-
-
-def get_tissues_id(log_file):
-    tissues_ids = []
-    # keep lines containing _act or _activity
-    pattern = r'^(?=.*(?:_act(?:ivity)?))((?!_act_).)*$'
-    with open(log_file, 'r') as fid:
-        for line in fid:
-            if re.search(pattern, line):
-                tissue_name = line.split()[0].split('_')[0]
-                tissue_id = int(float(line.split()[-1]))
-                if tissue_id not in tissues_ids:
-                    tissues_ids.append(tissue_id)
-    return tissues_ids
-
-
-def compute_parameters_maps(bin_file, bbox=np.array([[0.,1.]]*3), new_resolution=None, tissues_param_json=DEFAULT_tissues_param_json, ):
+def compute_parameters_maps(bin_file, log_file, bbox=np.array([[0.,1.]]*3), new_resolution=None, tissues_param_json=DEFAULT_tissues_param_json, ):
     """
     Compute the T1, T2, T2dash, rho, and chi maps from the binary file.
     """
     tissues_parameters = json.load(open(tissues_param_json, 'r'))  # Load tissue parameters from JSON file
-    log_file = '_'.join(bin_file.split('_')[:-2]) + '_log'
     segmentation = get_segmentation(bin_file, log_file)
     resolution = get_resolution(log_file)
     if new_resolution is not None:
@@ -158,17 +119,9 @@ def resample_segmentation(segmentation, orig_res, new_res, order=0):
     return resampled
 
 
-def get_resolution(log_file):
-    """
-    Get the resolution from the log file.
-    """
-    rx_cm = search_key_log(log_file, "pixel width")
-    rz_cm = search_key_log(log_file, "slice width")
-    return np.array([rx_cm, rx_cm, rz_cm])*10  # Convert to mm
-
-
 def build_static_phantom(
     bin_file, 
+    log_file,
     phantom_file='MRXCAT_phantom.npz', 
     field_strength=1.5, 
     plot=True, 
@@ -183,6 +136,7 @@ def build_static_phantom(
     Build a static phantom for LGE MRI.
     Parameters:
         bin_file (str): Path to the binary file containing the phantom data.
+        log_file (str): Path to the log file containing the key 'array_size'.
         phantom_file (str): Output file path for the generated phantom.
         field_strength (float): Magnetic field strength in Tesla.
         plot (bool): Whether to plot the phantom after generation.
@@ -193,7 +147,7 @@ def build_static_phantom(
         b1field_kwargs (dict): Keyword arguments for the B1 field computation.
         sensmap_kwargs (dict): Keyword arguments for the sensitivity map computation
     """
-    t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, bbox, resolution)
+    t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, log_file, bbox, resolution)
     
     # compute B0
     b0field_kwargs['chi'] = chi_map
@@ -240,11 +194,12 @@ def main():
     parser = argparse.ArgumentParser(description='Build MRXCAT Phantom from .bin file')
     
     parser.add_argument('bin_file', help='Input binary (.bin) file for phantom generation')
+    parser.add_argument('--log_file', help='Input log (_log) file', default=None)
     parser.add_argument('-p', '--phantom_file', help='Output phantom file (.npz)', default='MRXCAT_phantom.npz')
     parser.add_argument('-B0', '--field_strength', help='Field strength in Tesla (default: 1.5)', type=float, default=1.5)
     parser.add_argument('--plot', help='Whether to plot the phantom (default: True)', action=argparse.BooleanOptionalAction, default=True)
     
-    parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [0.2, 0.7, 0.6, 0.9, 0., 1.]", type=float, nargs='+', default=[0.2, 0.7, 0.6, 0.9, 0., 1.])
+    parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [0.2, 0.7, 0.6, 0.9, 0., 1.]", type=float, nargs='+', default=[0.2, 0.75, 0.55, 0.95, 0., 1.])
     parser.add_argument('-r', '--resolution', help='Resolution of the phantom (Nx, Ny, Nz)', type=int, nargs=3)
     
     parser.add_argument('--ncoils', help='Number of coils for sensitivity map', type=int, default=8)    
@@ -262,9 +217,20 @@ def main():
     b1_kwargs = dict(args.b1_kwargs)
     sensmap_kwargs = dict(args.sensmap_kwargs)
     
+    if args.log_file is None:
+        if args.bin_file.endswith('_with_inf.bin'): # default naming suffix for mask with infarct
+            log_file = log_file = '_'.join(args.bin_file.split('_')[:-4]) + '_log'
+        else:
+            log_file = '_'.join(args.bin_file.split('_')[:-2]) + '_log'
+        if not os.path.isfile(log_file):
+            raise FileNotFoundError(f"Auto-generated log file '{log_file}' does not exist. Please provide one using --log_file.")
+    else:
+        log_file = args.log_file
+    
     # Call your phantom generator
     build_static_phantom(
         bin_file=args.bin_file,
+        log_file=log_file,
         phantom_file=args.phantom_file,
         field_strength=args.field_strength,
         plot=args.plot,
