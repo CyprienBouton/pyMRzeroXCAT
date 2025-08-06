@@ -1,5 +1,11 @@
 import re
 import numpy as np
+from scipy.ndimage import zoom
+
+
+####################
+# LOG FILE FUNCTIONS
+####################
 
 
 def search_key_log(log_file, key):
@@ -26,6 +32,11 @@ def search_key_log(log_file, key):
                 else:
                     return value
     raise ValueError(f"Key '{key}' not found in log file.")
+
+
+####################
+# SEGMENTATION FUNCTIONS
+####################
 
 
 def get_segmentation(bin_file, log_file, flip_horizontal=True, swap_xy=False):
@@ -99,21 +110,6 @@ def save_segmentation(seg, bin_file, log_file, flip_horizontal=True, swap_xy=Fal
     print(f"✅ Segmentation saved to: {bin_file}")
 
 
-
-def get_tissues_id(log_file):
-    tissues_ids = []
-    # keep lines containing _act or _activity
-    pattern = r'^(?=.*(?:_act(?:ivity)?))((?!_act_).)*$'
-    with open(log_file, 'r') as fid:
-        for line in fid:
-            if re.search(pattern, line):
-                tissue_name = line.split()[0].split('_')[0]
-                tissue_id = int(float(line.split()[-1]))
-                if tissue_id not in tissues_ids:
-                    tissues_ids.append(tissue_id)
-    return tissues_ids
-
-
 def get_resolution(log_file):
     """
     Get the resolution from the log file.
@@ -127,3 +123,62 @@ def get_resolution(log_file):
     rx_cm = search_key_log(log_file, "pixel width")
     rz_cm = search_key_log(log_file, "slice width")
     return np.array([rx_cm, rx_cm, rz_cm])*10  # Convert to mm
+
+
+def resample_segmentation(segmentation, orig_res, new_res, order=0):
+    """
+    Resamples a 3D segmentation to a new resolution.
+
+    Parameters:
+        segmentation (np.ndarray): 3D array of shape (Nx, Ny, Nz)
+        orig_res (tuple or list): Original resolution (rx, ry, rz) in cm/pixel
+        new_res (tuple or list): Desired resolution (res_x, res_y, res_z) in cm/pixel
+        order (int): Interpolation order (0=nearest, 1=linear, 3=cubic)
+    
+    Returns:
+        np.ndarray: Resampled segmentation
+    """
+    orig_res = np.array(orig_res)
+    new_res = np.array(new_res)
+
+    # Calculate zoom factors: how much to scale each dimension
+    zoom_factors = orig_res / new_res
+
+    # Interpolate the segmentation
+    resampled = zoom(segmentation, zoom=zoom_factors, order=order)
+
+    return resampled
+
+
+def crop_segmentation(segmentation, bbox):
+    """
+    Crop the segmentation according to the bounding box.
+    bbox: np.array([[x_min, x_max], [y_min, y_max], [z_min, z_max]])
+    """
+    if bbox.shape != (3, 2):
+        raise ValueError("Bounding box must be a 3x2 array.")
+    
+    x_min, x_max = int(bbox[0, 0] * segmentation.shape[0]), int(bbox[0, 1] * segmentation.shape[0])
+    y_min, y_max = int(bbox[1, 0] * segmentation.shape[1]), int(bbox[1, 1] * segmentation.shape[1])
+    z_min, z_max = int(bbox[2, 0] * segmentation.shape[2]), int(bbox[2, 1] * segmentation.shape[2])
+    
+    return segmentation[x_min:x_max, y_min:y_max, z_min:z_max]
+
+
+####################
+# OTHER FUNCTIONS
+####################
+
+
+def get_tissues_id(log_file):
+    tissues_ids = []
+    # keep lines containing _act or _activity
+    pattern = r'^(?=.*(?:_act(?:ivity)?))((?!_act_).)*$'
+    with open(log_file, 'r') as fid:
+        for line in fid:
+            if re.search(pattern, line):
+                tissue_name = line.split()[0].split('_')[0]
+                tissue_id = int(float(line.split()[-1]))
+                if tissue_id not in tissues_ids:
+                    tissues_ids.append(tissue_id)
+    return tissues_ids
