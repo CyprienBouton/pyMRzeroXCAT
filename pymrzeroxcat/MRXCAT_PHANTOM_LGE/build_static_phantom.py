@@ -6,7 +6,7 @@ from mrtwin import b0field, b1field, sensmap
 import argparse
 from ast import literal_eval
 
-from pymrzeroxcat.read_mrxcat_raw_data import get_tissues_id, get_resolution, get_segmentation
+from pymrzeroxcat.read_mrxcat_raw_data import get_tissues_id, get_resolution, get_segmentation, resample_segmentation, crop_segmentation
 
 
 DEFAULT_T1 = 900    # ms (muscle, organs)
@@ -77,46 +77,6 @@ def compute_parameters_maps(bin_file, log_file, bbox=np.array([[0.,1.]]*3), new_
             t2dash_map[segmentation == tissue_id] = default_values['T2dash']
 
     return t1_map, t2_map, t2dash_map, rho_map, chi_map
-
-
-def crop_segmentation(segmentation, bbox):
-    """
-    Crop the segmentation according to the bounding box.
-    bbox: np.array([[x_min, x_max], [y_min, y_max], [z_min, z_max]])
-    """
-    if bbox.shape != (3, 2):
-        raise ValueError("Bounding box must be a 3x2 array.")
-    
-    x_min, x_max = int(bbox[0, 0] * segmentation.shape[0]), int(bbox[0, 1] * segmentation.shape[0])
-    y_min, y_max = int(bbox[1, 0] * segmentation.shape[1]), int(bbox[1, 1] * segmentation.shape[1])
-    z_min, z_max = int(bbox[2, 0] * segmentation.shape[2]), int(bbox[2, 1] * segmentation.shape[2])
-    
-    return segmentation[x_min:x_max, y_min:y_max, z_min:z_max]
-
-
-def resample_segmentation(segmentation, orig_res, new_res, order=0):
-    """
-    Resamples a 3D segmentation to a new resolution.
-
-    Parameters:
-        segmentation (np.ndarray): 3D array of shape (Nx, Ny, Nz)
-        orig_res (tuple or list): Original resolution (rx, ry, rz) in cm/pixel
-        new_res (tuple or list): Desired resolution (res_x, res_y, res_z) in cm/pixel
-        order (int): Interpolation order (0=nearest, 1=linear, 3=cubic)
-    
-    Returns:
-        np.ndarray: Resampled segmentation
-    """
-    orig_res = np.array(orig_res)
-    new_res = np.array(new_res)
-
-    # Calculate zoom factors: how much to scale each dimension
-    zoom_factors = orig_res / new_res
-
-    # Interpolate the segmentation
-    resampled = zoom(segmentation, zoom=zoom_factors, order=order)
-
-    return resampled
 
 
 def build_static_phantom(
