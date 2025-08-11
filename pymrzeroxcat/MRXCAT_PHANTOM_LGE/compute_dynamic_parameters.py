@@ -13,7 +13,7 @@ DEFAULT_tissues_param_json = 'pymrzeroxcat/MRXCAT_PHANTOM_LGE/tissues.json'
 
 
 def compute_dynamic_parameters_maps(bin_file, log_file, concentrations_file, 
-                            bbox=np.array([[0.,1.]]*3), new_resolution=None, tissues_param_json=DEFAULT_tissues_param_json, ):
+                            bbox=np.array([[0.,1.]]*3), new_resolution=None, tissues_param_json=DEFAULT_tissues_param_json, times_post=None):
     """
     Compute T1, T2, T2dash, rho, and chi parameter maps based on segmentation and tissue parameters.
 
@@ -36,6 +36,8 @@ def compute_dynamic_parameters_maps(bin_file, log_file, concentrations_file,
     tissues_param_json : str, optional
         Path to a JSON file containing tissue parameters like T1, T2, T2dash, rho, and chi. 
         If not specified, uses the default parameter file.
+    times_post : np.ndarray: 
+        Timing of each concentration after the injection [s]. Default to None. Use if concentration file is None.
 
     Returns:
     -------
@@ -71,7 +73,7 @@ def compute_dynamic_parameters_maps(bin_file, log_file, concentrations_file,
     }
     
     tissues_ids = get_tissues_id(log_file)
-    T1, T2, times_post = get_T1_T2_over_time(concentrations_file, tissues_parameters)
+    T1, T2, times_post = get_T1_T2_over_time(tissues_parameters, concentrations_file, times_post=times_post)
     time_frames = len(times_post)
     
     # initialize parameters
@@ -105,18 +107,21 @@ def compute_dynamic_parameters_maps(bin_file, log_file, concentrations_file,
 
 
 def get_T1_T2_over_time( 
-    concentrations_file,
     tissues_parameters,
+    concentrations_file=None,
     r1=4.1e-3,
     r2=4.6e-3,
+    times_post=None,
     ):
     """Get T1 and T2 relaxation times by label over time.
 
     Args:
-        concentrations_file (str): file containing contrast agent concentrations for injected tissue over time [mM].
         tissues_parameters (dict): dictionary of parameters for each tissue. 
+        concentrations_file (str, optional): file containing contrast agent concentrations for injected tissue over time [mM].
+            Default to None. tissues parameters should have 
         r1 (float, dict, optional): T1 relaxation time. Defaults to 4.1e-3 [s^-1.mM^-1].
         r2 (float, dict, optional): T2 relaxation time. Defaults to 4.6e-3 [s^-1.mM^-1].
+        times_post (np.ndarray): timing of each concentration after the injection [s]. Default to None. Use if concentration file is None.
 
     Raises:
         ValueError: if field strength is different than 1.5 or 3
@@ -130,6 +135,10 @@ def get_T1_T2_over_time(
     tissues_ID_injected=[ tissue_ID for tissue_ID, tissue_param in tissues_parameters.items() 
                          if any(sub in tissue_param['description'] for sub in ['myo', 'bldp', 'infarct']) ]
     
+    # If concentration is None return relaxations over time from tissues parameters
+    if concentrations_file is None:
+        assert times_post is not None, 'If the concentration are note provided, times_post must be provided'
+        return read_dynamic_concentration(tissues_parameters, times_post)
     # Initialize relaxation times 
     concentrations, times_post = get_concentration_dict(concentrations_file, tissues_ID_injected, tissues_parameters)
     time_frames = len(concentrations['1'])
@@ -190,3 +199,34 @@ def compute_current_relaxation(T_native, relaxivity, concentration, time_unit='m
     T_post = 1 / (1 / T_native + relaxivity * concentration)
     T_post /= time_factor
     return T_post
+
+
+def read_dynamic_concentration(tissues_parameters, times_post):
+    """Read dynamic relaxations over time from tissues parameters
+
+    Args:
+        tissues_parameters (dict): dictionary of parameters for each tissue. 
+        times_post (np.ndarray): timing of each concentration after the injection [s]. Default to None. Use if concentration file is None.
+    """
+    tissues_ID = tissues_parameters.keys()
+    time_frames = len(times_post)
+    T1_over_time = {tissue_ID: np.zeros(time_frames) for tissue_ID in tissues_ID}
+    T2_over_time = {tissue_ID: np.zeros(time_frames) for tissue_ID in tissues_ID}
+    for tissue_ID in tissues_ID:
+        if isinstance(tissues_parameters[tissue_ID]['T1'], float):
+            T1_over_time[tissue_ID] = np.repeat( np.expand_dims(tissues_parameters[tissue_ID]['T1'], axis=0), time_frames, axis=0)
+        else:
+            assert len(tissues_parameters[tissue_ID]['T1'])==len(times_post), 'times_post and T1 should have the same size'
+            all_T1_tissue = tissues_parameters[tissue_ID]['T1']
+            for t_idx, T1 in enumerate( all_T1_tissue ):
+                T1_over_time[tissue_ID][t_idx] = T1
+                
+        if isinstance(tissues_parameters[tissue_ID]['T2'], float):
+            T2_over_time[tissue_ID] = np.repeat( np.expand_dims(tissues_parameters[tissue_ID]['T2'], axis=0), time_frames, axis=0)
+        else:
+            assert len(tissues_parameters[tissue_ID]['T2'])==len(times_post), 'times_post and T2 should have the same size'
+            all_T2_tissue = tissues_parameters[tissue_ID]['T2']
+            for t_idx, T2 in enumerate( all_T2_tissue ):
+                T2_over_time[tissue_ID][t_idx] = T2
+    
+    return T1_over_time, T2_over_time, times_post
