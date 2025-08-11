@@ -35,19 +35,19 @@ MBF_STRESS = 3.5 / 60 # myocardial blood flow [ml/g/s]
 ######################
 
 
-def fermi_function(t, alpha, beta):
+def fermi_function(t, tau, k):
     """
-    Calculate the Fermi function based on alpha, beta, and time info.
+    Calculate the Fermi function based on tau, k, and time info.
 
     Args:
         t (numpy.ndarray): Time input array.
-        alpha (float, optional): Fermi model parameter alpha.
-        beta (float, optional): Fermi model parameter beta.
+        tau (float, optional): Fermi model parameter tau.
+        k (float, optional): Fermi model parameter k.
 
     Returns:
             (numpy.ndarray) impulse residue function
     """
-    return (1 + beta) / (1 + beta * np.exp(alpha * t))
+    return 1 / ( 1 + np.exp((t-tau)*k) )
 
 
 def convolve_concentration_impulse_residue_function(
@@ -129,13 +129,13 @@ def get_initial_concentration(T_post, T_native, relaxivity, time_unit='ms'):
 ######################
 
 
-def get_concentration_fermi(times_post, alpha, beta, contrast_dose=0.075, is_stress=False, time_step=0.2, lv_myo_shift=3):
+def get_concentration_fermi(times_post, tau, k, contrast_dose=0.075, is_stress=False, time_step=0.2, lv_myo_shift=3):
     """Get contrast agent tissue concentration from fermi model.
 
     Args:
         times_post (np.ndarray): timing of each concentration after the injection [s].
-        alpha (float): Fermi model parameter alpha.
-        beta (float): Fermi model parameter beta.
+        tau (float): Fermi model parameter tau.
+        k (float): Fermi model parameter k.
         contrast_dose (float, optional): contrast dose input Defaults to 0.075 [mmol/kg].
         is_stress (bool, optional): Whether the patient is on stress. Defaults to False.
         time_step (float): time_step. Default to 0.2 [s].
@@ -168,7 +168,7 @@ def get_concentration_fermi(times_post, alpha, beta, contrast_dose=0.075, is_str
     arterial_concentration_upsample = np.interp(t_upsample, t, arterial_concentration)
     
     # Compute impulse_residue_function with fermi function
-    impulse_residue_function = fermi_function(t_upsample, alpha, beta)
+    impulse_residue_function = fermi_function(t_upsample, tau, k)
     
     # Convolve with the arterial concentration 
     myocardial_concentration_upsample = convolve_concentration_impulse_residue_function(
@@ -190,10 +190,10 @@ def get_concentration_fermi(times_post, alpha, beta, contrast_dose=0.075, is_str
 
 def get_concentrations(
     times_post, 
-    alpha_myo, 
-    beta_myo, 
-    alpha_inf, 
-    beta_inf,
+    tau_myo, 
+    k_myo, 
+    tau_inf, 
+    k_inf,
     lv_myo_shift=3,
     lv_inf_shift=3, 
     contrast_dose=0.075, 
@@ -205,10 +205,10 @@ def get_concentrations(
 
     Args:
         times_post (np.ndarray): timing of each concentration after the injection [s].
-        alpha_myo (float, optional): Fermi model parameter alpha for myocardium.
-        beta_myo (float, optional): Fermi model parameter beta for myocardium.
-        alpha_inf (float, optional): Fermi model parameter alpha for infarction.
-        beta_inf (float, optional): Fermi model parameter beta for infarction.
+        tau_myo (float, optional): Fermi model parameter tau for myocardium.
+        k_myo (float, optional): Fermi model parameter k for myocardium.
+        tau_inf (float, optional): Fermi model parameter tau for infarction.
+        k_inf (float, optional): Fermi model parameter k for infarction.
         lv_myo_shift (float): time shift between left ventricle and myocardium. Default to 3 [s].
         lv_inf_shift (float): time shift between left ventricle and infarction. Default to 3 [s].
         contrast_dose (float, optional): contrast dose input Defaults to 0.075 [mmol/kg].
@@ -222,11 +222,11 @@ def get_concentrations(
         (np.ndarray) contrast agent concentration in the infarction for each time step [mM].
     """
     _, c_myo = get_concentration_fermi(
-        times_post, alpha_myo, beta_myo, contrast_dose, 
+        times_post, tau_myo, k_myo, contrast_dose, 
         is_stress, time_step, lv_myo_shift,
     )
     c_art, c_inf = get_concentration_fermi(
-        times_post, alpha_inf, beta_inf, contrast_dose, 
+        times_post, tau_inf, k_inf, contrast_dose, 
         is_stress, time_step, lv_inf_shift,
     )
     
@@ -247,13 +247,13 @@ def main():
     parser.add_argument('-t_start','--time_start', type=float, default=0., help='Start time after injection [s]')
     parser.add_argument('-d','--duration', type=float, default=60.*5, help='Duration of the scan [s]. Default to 5 minutes,')
     parser.add_argument('-s', '--nb_sampled', type=int, default=300 ,help='Number of sampled. Default to 100')
-    parser.add_argument('--alpha_myo', type=float, default=.01, help='Fermi model alpha parameter for myocardium')
-    parser.add_argument('--beta_myo', type=float, default=.01, help='Fermi model beta parameter for myocardium')
-    parser.add_argument('--alpha_inf', type=float, default=.01, help='Fermi model alpha parameter for infarction')
-    parser.add_argument('--beta_inf', type=float, default=.005, help='Fermi model beta parameter for infarction')
-    parser.add_argument('--lv_myo_shift', type=float, default=3, help='Time shift between LV and myocardium [s]. Default is 3.')
-    parser.add_argument('--lv_inf_shift', type=float, default=3, help='Time shift between LV and infarction [s]. Default is 3.')
-    parser.add_argument('--contrast_dose', type=float, default=0.1, help='Contrast dose [mmol/kg]. Default is 0.075.')
+    parser.add_argument('--tau_myo', type=float, default=0.1, help='Fermi model tau parameter for myocardium')
+    parser.add_argument('--k_myo', type=float, default=0.1, help='Fermi model k parameter for myocardium')
+    parser.add_argument('--tau_inf', type=float, default=0.1, help='Fermi model tau parameter for infarction')
+    parser.add_argument('--k_inf', type=float, default=0.05, help='Fermi model k parameter for infarction')
+    parser.add_argument('--lv_myo_shift', type=float, default=30, help='Time shift between LV and myocardium [s].')
+    parser.add_argument('--lv_inf_shift', type=float, default=40, help='Time shift between LV and infarction [s].')
+    parser.add_argument('--contrast_dose', type=float, default=0.2, help='Contrast dose [mmol/kg]. Default is 0.02.')
     parser.add_argument('--is_stress', action=argparse.BooleanOptionalAction, default=True, help='Flag to indicate stress condition.')
     parser.add_argument('--time_step', type=float, default=0.2, help='Time step used to compute concentration [s]. Default is 0.2.')
     parser.add_argument('--plot', action=argparse.BooleanOptionalAction, default=True, help='Flag to plot resulting concentrations.')
@@ -266,10 +266,10 @@ def main():
     
     c_art, c_myo, c_inf = get_concentrations(
         times_post=times_post,
-        alpha_myo=args.alpha_myo,
-        beta_myo=args.beta_myo,
-        alpha_inf=args.alpha_inf,
-        beta_inf=args.beta_inf,
+        tau_myo=args.tau_myo,
+        k_myo=args.k_myo,
+        tau_inf=args.tau_inf,
+        k_inf=args.k_inf,
         lv_myo_shift=args.lv_myo_shift,
         lv_inf_shift=args.lv_inf_shift,
         contrast_dose=args.contrast_dose,
