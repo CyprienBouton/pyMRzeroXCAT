@@ -93,6 +93,7 @@ def build_static_phantom(
     b0field_kwargs={}, 
     b1field_kwargs={},
     sensmap_kwargs={}, 
+    plot_kwargs={}, 
 ):
     """
     Build a static phantom for LGE MRI.
@@ -109,6 +110,7 @@ def build_static_phantom(
         b0field_kwargs (dict): Keyword arguments for the B0 field computation.
         b1field_kwargs (dict): Keyword arguments for the B1 field computation.
         sensmap_kwargs (dict): Keyword arguments for the sensitivity map computation
+        plot_kwargs (dict): Keyword arguments for the plot_dynamic
     """
     t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, log_file, bbox, resolution, tissues_param_json=tissues_param_json)
     
@@ -150,7 +152,11 @@ def build_static_phantom(
     if plot:
         import MRzeroCore as mr0
         phantom = mr0.DynamicVoxelPhantom.load(phantom_file)
-        phantom.plot()
+        if 'time_unit' not in plot_kwargs:
+            plot_kwargs['time_unit'] = 'ms'
+        if 'display_units' not in plot_kwargs:
+            plot_kwargs['display_units'] = True
+        phantom.plot(**plot_kwargs)
 
 
 def main():
@@ -171,6 +177,7 @@ def main():
     parser.add_argument('--b0_kwargs', help="Keyword arguments passed to `mrtwin.b0field()`.", type=parse_key_value, default={}, nargs='+')
     parser.add_argument('--b1_kwargs', help="Keyword arguments passed to `mrtwin.b1field()`.", type=parse_key_value, default={}, nargs='+')
     parser.add_argument('--sensmap_kwargs', help="Keyword arguments passed to `mrtwin.sensmap()`.", type=parse_key_value, default={}, nargs='+')
+    parser.add_argument('--plot_kwargs', help="Keyword arguments passed to `DynamicVoxelPhantom.plot_dynamic()`.", type=parse_key_value, default={}, nargs='+')
 
     args = parser.parse_args()
 
@@ -181,6 +188,7 @@ def main():
     b0_kwargs = dict(args.b0_kwargs)
     b1_kwargs = dict(args.b1_kwargs)
     sensmap_kwargs = dict(args.sensmap_kwargs)
+    plot_kwargs = dict(args.plot_kwargs)
     
     if args.log_file is None:
         log_file = resolve_log_file(args.bin_file)
@@ -201,6 +209,7 @@ def main():
         b0field_kwargs=b0_kwargs,
         b1field_kwargs=b1_kwargs,
         sensmap_kwargs=sensmap_kwargs,
+        plot_kwargs=plot_kwargs,
     )
 
 if __name__ == "__main__":
