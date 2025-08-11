@@ -7,6 +7,7 @@ import argparse
 from ast import literal_eval
 
 from pymrzeroxcat.read_mrxcat_raw_data import get_tissues_id, get_resolution, get_segmentation, resample_segmentation, crop_segmentation
+from pymrzeroxcat.read_mrxcat_raw_data import resolve_log_file
 
 
 DEFAULT_T1 = 900    # ms (muscle, organs)
@@ -14,7 +15,7 @@ DEFAULT_T2 = 50     # ms (muscle, soft tissue)
 DEFAULT_T2dash = 30 # ms (typical T2' value for soft tissue)
 DEFAULT_RHO = 85.0    # Between muscle (80) and liver (90)
 DEFAULT_CHI = -9.0    # Typical soft tissue susceptibility (ppm)
-DEFAULT_tissues_param_json = 'pymrzeroxcat/MRXCAT_PHANTOM_LGE/tissues.json'
+DEFAULT_tissues_param_json = 'MRXCAT_raw_data/tissues.json'
 
 
 def parse_key_value(arg):
@@ -88,6 +89,7 @@ def build_static_phantom(
     bbox=np.array([[0., 1.]]*3), 
     resolution=None,
     ncoils=8,
+    tissues_param_json=DEFAULT_tissues_param_json,
     b0field_kwargs={}, 
     b1field_kwargs={},
     sensmap_kwargs={}, 
@@ -103,11 +105,12 @@ def build_static_phantom(
         bbox (np.ndarray): Bounding box for the phantom in the format [[x_min, x_max], [y_min, y_max], [z_min, z_max]].
         resolution (tuple): Resolution of the phantom in mm/pixel (Nx, Ny, Nz).
         ncoils (int): Number of coils for the sensitivity map.
+        tissues_param_json (str): Path to a JSON file containing tissue parameters like T1, T2, T2dash, rho, and chi. Default to DEFAULT_tissues_param_json
         b0field_kwargs (dict): Keyword arguments for the B0 field computation.
         b1field_kwargs (dict): Keyword arguments for the B1 field computation.
         sensmap_kwargs (dict): Keyword arguments for the sensitivity map computation
     """
-    t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, log_file, bbox, resolution)
+    t1_map, t2_map, t2dash_map, rho_map, chi_map = compute_parameters_maps(bin_file, log_file, bbox, resolution, tissues_param_json=tissues_param_json)
     
     # compute B0
     b0field_kwargs['chi'] = chi_map
@@ -162,7 +165,9 @@ def main():
     parser.add_argument('--bbox', help="Bounding box (3x2 array), default: [0.2, 0.7, 0.6, 0.9, 0., 1.]", type=float, nargs='+', default=[0.2, 0.75, 0.55, 0.95, 0., 1.])
     parser.add_argument('-r', '--resolution', help='Resolution of the phantom (Nx, Ny, Nz)', type=int, nargs=3)
     
-    parser.add_argument('--ncoils', help='Number of coils for sensitivity map', type=int, default=8)    
+    parser.add_argument('--ncoils', help='Number of coils for sensitivity map', type=int, default=8)
+    parser.add_argument('--param_json', help="Tissues parameters file (.json)", default=DEFAULT_tissues_param_json)
+        
     parser.add_argument('--b0_kwargs', help="Keyword arguments passed to `mrtwin.b0field()`.", type=parse_key_value, default={}, nargs='+')
     parser.add_argument('--b1_kwargs', help="Keyword arguments passed to `mrtwin.b1field()`.", type=parse_key_value, default={}, nargs='+')
     parser.add_argument('--sensmap_kwargs', help="Keyword arguments passed to `mrtwin.sensmap()`.", type=parse_key_value, default={}, nargs='+')
@@ -178,12 +183,7 @@ def main():
     sensmap_kwargs = dict(args.sensmap_kwargs)
     
     if args.log_file is None:
-        if args.bin_file.endswith('_with_inf.bin'): # default naming suffix for mask with infarct
-            log_file = log_file = '_'.join(args.bin_file.split('_')[:-4]) + '_log'
-        else:
-            log_file = '_'.join(args.bin_file.split('_')[:-2]) + '_log'
-        if not os.path.isfile(log_file):
-            raise FileNotFoundError(f"Auto-generated log file '{log_file}' does not exist. Please provide one using --log_file.")
+        log_file = resolve_log_file(args.bin_file)
     else:
         log_file = args.log_file
     
@@ -196,6 +196,8 @@ def main():
         plot=args.plot,
         bbox=bbox,
         resolution=args.resolution,
+        ncoils=args.ncoils,
+        tissues_param_json=args.param_json,
         b0field_kwargs=b0_kwargs,
         b1field_kwargs=b1_kwargs,
         sensmap_kwargs=sensmap_kwargs,

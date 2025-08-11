@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 from pymrzeroxcat.MRXCAT_PHANTOM_LGE.build_static_phantom import get_segmentation
+from pymrzeroxcat.read_mrxcat_raw_data import resolve_log_file
 
 
 def load_segmentation(bin_path, shape):
@@ -71,12 +72,7 @@ def main():
     args = parser.parse_args()
     
     if args.log_file is None:
-        if args.bin_file.endswith('_with_inf.bin'): # default naming suffix for mask with infarct
-            log_file = log_file = '_'.join(args.bin_file.split('_')[:-4]) + '_log'
-        else:
-            log_file = '_'.join(args.bin_file.split('_')[:-2]) + '_log'
-        if not os.path.isfile(log_file):
-            raise FileNotFoundError(f"Auto-generated log file '{log_file}' does not exist. Please provide one using --log_file.")
+        log_file = resolve_log_file(args.bin_file)
     else:
         log_file = args.log_file
     

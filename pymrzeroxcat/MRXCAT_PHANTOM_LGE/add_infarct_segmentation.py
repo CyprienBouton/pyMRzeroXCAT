@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, RectangleSelector, Button
 from skimage.measure import find_contours
 
-from pymrzeroxcat.read_mrxcat_raw_data import get_segmentation, save_segmentation
+from pymrzeroxcat.read_mrxcat_raw_data import get_segmentation, save_segmentation, resolve_log_file
 
 def load_segmentation(bin_path, shape):
     seg = np.fromfile(bin_path, dtype=np.float32).astype(np.uint8)
@@ -171,9 +171,7 @@ def main():
     args = parser.parse_args()
     
     if args.log_file is None:
-        log_file = '_'.join(args.bin_file.split('_')[:-2]) + '_log'
-        if not os.path.isfile(log_file):
-            raise FileNotFoundError(f"Auto-generated log file '{log_file}' does not exist. Please provide one using --log_file.")
+        log_file = resolve_log_file(args.bin_file)
     else:
         log_file = args.log_file
     

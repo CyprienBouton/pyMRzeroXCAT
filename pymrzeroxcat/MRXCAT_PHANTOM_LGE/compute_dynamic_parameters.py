@@ -9,7 +9,7 @@ DEFAULT_T2 = 50     # ms (muscle, soft tissue)
 DEFAULT_T2dash = 30 # ms (typical T2' value for soft tissue)
 DEFAULT_RHO = 85.0    # Between muscle (80) and liver (90)
 DEFAULT_CHI = -9.0    # Typical soft tissue susceptibility (ppm)
-DEFAULT_tissues_param_json = 'pymrzeroxcat/MRXCAT_PHANTOM_LGE/tissues.json'
+DEFAULT_tissues_param_json = 'MRXCAT_raw_data/tissues.json'
 
 
 def compute_dynamic_parameters_maps(bin_file, log_file, concentrations_file, 

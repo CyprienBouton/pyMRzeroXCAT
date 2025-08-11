@@ -7,9 +7,10 @@ import argparse
 from ast import literal_eval
 
 from pymrzeroxcat.MRXCAT_PHANTOM_LGE.compute_dynamic_parameters import compute_dynamic_parameters_maps
+from pymrzeroxcat.read_mrxcat_raw_data import resolve_log_file
 
 
-DEFAULT_tissues_param_json = 'pymrzeroxcat/MRXCAT_PHANTOM_LGE/tissues.json'
+DEFAULT_tissues_param_json = 'MRXCAT_raw_data/tissues.json'
 
 
 def parse_key_value(arg):
@@ -63,7 +64,7 @@ def build_dynamic_phantom(
         bbox (np.ndarray): Bounding box for the phantom in the format [[x_min, x_max], [y_min, y_max], [z_min, z_max]].
         resolution (tuple): Resolution of the phantom in mm/pixel (Nx, Ny, Nz).
         ncoils (int): Number of coils for the sensitivity map.
-        param_json (str): Path to a JSON file containing tissue parameters like T1, T2, T2dash, rho, and chi. Default to DEFAULT_tissues_param_json
+        tissues_param_json (str): Path to a JSON file containing tissue parameters like T1, T2, T2dash, rho, and chi. Default to DEFAULT_tissues_param_json
         times_post (np.ndarray): Timing of each concentration after the injection [s]. Default to None. Use if concentration file is None.
         b0field_kwargs (dict): Keyword arguments for the B0 field computation.
         b1field_kwargs (dict): Keyword arguments for the B1 field computation.
@@ -160,12 +161,7 @@ def main():
     plot_kwargs = dict(args.plot_kwargs)
     
     if args.log_file is None:
-        if args.bin_file.endswith('_with_inf.bin'): # default naming suffix for mask with infarct
-            log_file = log_file = '_'.join(args.bin_file.split('_')[:-4]) + '_log'
-        else:
-            log_file = '_'.join(args.bin_file.split('_')[:-2]) + '_log'
-        if not os.path.isfile(log_file):
-            raise FileNotFoundError(f"Auto-generated log file '{log_file}' does not exist. Please provide one using --log_file.")
+        log_file = resolve_log_file(args.bin_file)
     else:
         log_file = args.log_file
     
