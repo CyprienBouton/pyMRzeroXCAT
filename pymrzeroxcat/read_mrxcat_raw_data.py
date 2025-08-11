@@ -1,3 +1,4 @@
+import os
 import re
 import numpy as np
 from scipy.ndimage import zoom
@@ -182,3 +183,24 @@ def get_tissues_id(log_file):
                 if tissue_id not in tissues_ids:
                     tissues_ids.append(tissue_id)
     return tissues_ids
+
+
+def resolve_log_file(bin_file: str) -> str:
+    """
+    Resolves the expected log file name from the given binary file name.
+
+    Raises:
+        FileNotFoundError: If the resolved log file does not exist.
+    
+    Returns:
+        str: The resolved log file name.
+    """
+    dir_file = os.path.dirname(bin_file)
+    log_files  = [os.path.join(dir_file, f) for f in os.listdir(dir_file) if f.endswith('_log')]
+    if len(log_files)==1 and os.path.isfile(log_files[0]):
+        log_file = log_files[0]
+
+    else:
+        raise FileNotFoundError(f"Log file not found. Please provide one manually")
+
+    return log_file
