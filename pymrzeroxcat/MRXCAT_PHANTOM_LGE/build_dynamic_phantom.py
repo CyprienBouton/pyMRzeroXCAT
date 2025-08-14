@@ -92,7 +92,7 @@ def build_dynamic_phantom(
     b1field_kwargs['shape'] = B0_map.squeeze().shape
     b1field_kwargs['mask'] = rho_map.squeeze()>0
     if 'b1range' not in b1field_kwargs:
-        b1field_kwargs['b1range'] = (1., 1.)
+        b1field_kwargs['b1range'] = (.99, 1.)
     B1_map = b1field(**b1field_kwargs)
     if B1_map.ndim==2:
         B1_map = np.expand_dims(B1_map, axis=2)
