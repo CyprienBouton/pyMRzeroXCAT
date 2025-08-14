@@ -106,7 +106,7 @@ def build_dynamic_phantom(
         PD_map=rho_map,
         T1_map=t1_map * 1e-3,
         T2_map=t2_map * 1e-3,
-        T2dash_map=t2dash_map,
+        T2dash_map=t2dash_map * 1e-3,
         D_map=np.zeros_like(rho_map),  # Diffusion is set to 0 everywhere
         B0_map=B0_map,
         B1_map=B1_map,
