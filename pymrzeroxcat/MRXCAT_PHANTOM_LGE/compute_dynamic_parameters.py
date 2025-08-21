@@ -213,7 +213,7 @@ def read_dynamic_concentration(tissues_parameters, times_post):
     T1_over_time = {tissue_ID: np.zeros(time_frames) for tissue_ID in tissues_ID}
     T2_over_time = {tissue_ID: np.zeros(time_frames) for tissue_ID in tissues_ID}
     for tissue_ID in tissues_ID:
-        if isinstance(tissues_parameters[tissue_ID]['T1'], float):
+        if isinstance(tissues_parameters[tissue_ID]['T1'], (int, float)):
             T1_over_time[tissue_ID] = np.repeat( np.expand_dims(tissues_parameters[tissue_ID]['T1'], axis=0), time_frames, axis=0)
         else:
             assert len(tissues_parameters[tissue_ID]['T1'])==len(times_post), 'times_post and T1 should have the same size'
@@ -221,7 +221,7 @@ def read_dynamic_concentration(tissues_parameters, times_post):
             for t_idx, T1 in enumerate( all_T1_tissue ):
                 T1_over_time[tissue_ID][t_idx] = T1
                 
-        if isinstance(tissues_parameters[tissue_ID]['T2'], float):
+        if isinstance(tissues_parameters[tissue_ID]['T2'], (int, float)):
             T2_over_time[tissue_ID] = np.repeat( np.expand_dims(tissues_parameters[tissue_ID]['T2'], axis=0), time_frames, axis=0)
         else:
             assert len(tissues_parameters[tissue_ID]['T2'])==len(times_post), 'times_post and T2 should have the same size'
