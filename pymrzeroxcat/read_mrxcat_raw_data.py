@@ -126,27 +126,26 @@ def get_resolution(log_file):
     return np.array([rx_cm, rx_cm, rz_cm])*10  # Convert to mm
 
 
-def resample_segmentation(segmentation, orig_res, new_res, order=0):
+def resample_segmentation(segmentation, base_matrix, new_matrix):
     """
-    Resamples a 3D segmentation to a new resolution.
+    Resamples a 3D segmentation to a new matrix.
 
     Parameters:
-        segmentation (np.ndarray): 3D array of shape (Nx, Ny, Nz)
-        orig_res (tuple or list): Original resolution (rx, ry, rz) in cm/pixel
-        new_res (tuple or list): Desired resolution (res_x, res_y, res_z) in cm/pixel
-        order (int): Interpolation order (0=nearest, 1=linear, 3=cubic)
+        segmentation (np.ndarray): 3D input segmentation.
+        base_matrix (tuple or list): Original matrix (Nx, Ny, Nz).
+        new_matrix (tuple or list): Desired matrix (Nx, Ny, Nz).
     
     Returns:
         np.ndarray: Resampled segmentation
     """
-    orig_res = np.array(orig_res)
-    new_res = np.array(new_res)
+    base_matrix = np.array(base_matrix)
+    new_matrix = np.array(new_matrix)
 
     # Calculate zoom factors: how much to scale each dimension
-    zoom_factors = orig_res / new_res
+    zoom_factors = new_matrix / base_matrix
 
     # Interpolate the segmentation
-    resampled = zoom(segmentation, zoom=zoom_factors, order=order)
+    resampled = zoom(segmentation, zoom=zoom_factors, order=0)
 
     return resampled
 
@@ -204,3 +203,30 @@ def resolve_log_file(bin_file: str) -> str:
         raise FileNotFoundError(f"Log file not found. Please provide one manually")
 
     return log_file
+
+
+def get_crop_segmentation_resampled(bin_file, log_file, FOV, matrix, center_segmentation=[0.5, 0.5, 0.5]):
+    """ Get a cropped and resampled segmentation.
+    
+    Args:
+        bin_file (str): Path to the binary segmentation file.
+        log_file (str): Path to the log file containing the 'array_size' key.
+        FOV (tuple): Desired field of view in mm (FOV_x, FOV_y, FOV_z).
+        matrix (tuple): Desired resolution matrix (Nx, Ny, Nz).
+
+    Returns:
+        np.ndarray: Cropped and resampled segmentation.
+    """
+    segmentation = get_segmentation(bin_file, log_file)
+    base_matrix = segmentation.shape
+    base_FOV = get_resolution(log_file) * base_matrix
+    min_position = np.clip(center_segmentation - FOV/(2*base_FOV), 0, 1)
+    max_position = np.clip(center_segmentation + FOV/(2*base_FOV), 0, 1)
+    bbox = np.array([
+        [min_position[0], max_position[0]],
+        [min_position[1], max_position[1]],
+        [min_position[2], max_position[2]],
+    ])
+    segmentation = crop_segmentation(segmentation, bbox)
+    segmentation = resample_segmentation(segmentation, segmentation.shape, matrix)
+    return segmentation
