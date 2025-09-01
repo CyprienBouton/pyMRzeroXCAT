@@ -13,7 +13,7 @@ from pymrzeroxcat.convert_arguments import parse_key_value_or_json_file, complet
 from pymrzeroxcat.read_mrxcat_raw_data import get_crop_segmentation_resampled, resolve_log_file, get_tissues_id
 from pymrzeroxcat.MRXCAT_PHANTOM_LGE.compute_dynamic_parameters import get_T1_T2_over_time
 
-JSON_PARAMETERS = pkg_resources.files("pymrzeroxcat").joinpath("../MRXCAT_raw_data/tissues.json").as_posix()
+JSON_PARAMETERS = pkg_resources.files("pymrzeroxcat").joinpath("tissues.json").as_posix()
 DEFAULT_T1 = 900    # ms (muscle, organs)
 DEFAULT_T2 = 50     # ms (muscle, soft tissue)
 DEFAULT_T2dash = 30 # ms (typical T2' value for soft tissue)
@@ -159,9 +159,9 @@ def main():
     
     # Imaging Parameters
     imaging_group = parser.add_argument_group("Imaging Parameters")
-    imaging_group.add_argument('-FOV', type=float, nargs=3, help='Field of view in mm. Default to (200,200,50)')   
-    imaging_group.add_argument('-r', '--resolution', type=float, nargs=3, help='Voxel resolution. Default to 1x1x5 mm')
-    imaging_group.add_argument('-m', '--matrix', type=int, nargs=3, help='Matrix size. Default to 200x200x10')
+    imaging_group.add_argument('-FOV', type=float, nargs=3, help='Field of view in mm. Default to (300,300,50)')   
+    imaging_group.add_argument('-r', '--resolution', type=float, nargs=3, help='Voxel resolution. Default to 2x2x5 mm')
+    imaging_group.add_argument('-m', '--matrix', type=int, nargs=3, help='Matrix size. Default to 150x150x10')
     imaging_group.add_argument('-B0', '--field_strength', type=float, help='Main magnetic field strength in Tesla. Default to 1.5', default=1.5)
     imaging_group.add_argument('--ncoils', type=int, help='Number of receiver coils. Default to 8', default=8)
 
