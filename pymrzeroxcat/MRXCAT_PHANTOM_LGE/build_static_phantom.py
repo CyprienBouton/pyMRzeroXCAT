@@ -1,6 +1,7 @@
 import argparse
 import json
 import importlib.resources as pkg_resources
+import os
 
 import numpy as np
 import MRzeroCore as mr0
@@ -12,7 +13,7 @@ from tkinter import filedialog
 from pymrzeroxcat.convert_arguments import parse_key_value_or_json_file, complete_imaging_args
 from pymrzeroxcat.read_mrxcat_raw_data import get_crop_segmentation_resampled, resolve_log_file, get_tissues_id
 
-JSON_PARAMETERS = pkg_resources.files("pymrzeroxcat").joinpath("../MRXCAT_raw_data/tissues.json").as_posix()
+JSON_PARAMETERS = os.path.join(os.path.dirname(__file__), "../../MRXCAT_raw_data/tissues.json")
 DEFAULT_T1 = 900    # ms (muscle, organs)
 DEFAULT_T2 = 50     # ms (muscle, soft tissue)
 DEFAULT_T2dash = 30 # ms (typical T2' value for soft tissue)
