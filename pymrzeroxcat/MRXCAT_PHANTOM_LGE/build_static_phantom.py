@@ -27,7 +27,7 @@ def get_phantom_values(
     log_file,
     FOV=(200, 200, 200),
     matrix=(128,128,5),
-    center_segmentation=[0.4, 0.8, 0.5],
+    center_segmentation=[0.4, 0.75, 0.5],
     field_strength=1.5,
     ncoils=8,
     param_json=JSON_PARAMETERS,
