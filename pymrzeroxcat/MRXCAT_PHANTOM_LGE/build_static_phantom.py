@@ -146,6 +146,8 @@ def main():
     imaging_group.add_argument('-FOV', type=float, nargs=3, help='Field of view in mm. Default to (300,300,50)')   
     imaging_group.add_argument('-r', '--resolution', type=float, nargs=3, help='Voxel resolution. Default to 2x2x5 mm')
     imaging_group.add_argument('-m', '--matrix', type=int, nargs=3, help='Matrix size. Default to 150x150x10')
+    imaging_group.add_argument('-c', '--center_segmentation', type=float, nargs=3, 
+                               help='Center of the segmentation [x,y,z] (relative to FOV). Default to [0.4,0.75,0.5]', default=[0.4,0.75,0.5])
     imaging_group.add_argument('-B0', '--field_strength', type=float, help='Main magnetic field strength in Tesla. Default to 1.5', default=1.5)
     imaging_group.add_argument('--ncoils', type=int, help='Number of receiver coils. Default to 8', default=8)
 
@@ -192,6 +194,7 @@ def main():
         log_file=args.log_file,
         FOV=args.FOV,
         matrix=args.matrix,
+        center_segmentation=args.center_segmentation,
         field_strength=args.field_strength,
         ncoils=args.ncoils,
         param_json=args.param_json,
