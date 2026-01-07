@@ -160,7 +160,7 @@ def main():
 
     # Output
     output_group = parser.add_argument_group("Output")
-    output_group.add_argument('-p', '--phantom_file', type=str, help='Path to output phantom file', default='T1MES_default.npz')
+    output_group.add_argument('-p', '--phantom_file', type=str, help='Path to output phantom file', default='MRXCAT_default.npz')
 
     # Visualization
     vis_group = parser.add_argument_group("Visualization")
