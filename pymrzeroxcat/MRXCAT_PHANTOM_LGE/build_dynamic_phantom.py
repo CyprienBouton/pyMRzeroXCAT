@@ -124,7 +124,7 @@ def get_phantom_values(
         PD_map=PD_map,
         T1_map=T1_map * 1e-3,
         T2_map=T2_map * 1e-3,
-        T2dash_map=T2dash_map,
+        T2dash_map=T2dash_map * 1e-3,
         D_map=D_map,  # Diffusion is set to 0 everywhere
         B0_map=B0_map,
         B1_map=B1_map,
