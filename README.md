@@ -52,7 +52,7 @@ These commands all start with `mrxcat_`.
 	- *.noi		MRXCAT noise only
 	- *_par.mat	MRXCAT parameters
     
-5. To display the produced phantom, run `mrxcat_display` and select
+5. To display the produced phantom, run `mrxcat_visualize` and select
 	the *.cpx file in the file selection dialog.
 
 ![Myocardial perfusion](visuals/cine.gif) <br>
@@ -60,21 +60,18 @@ These commands all start with `mrxcat_`.
 
 ## Build MRzero Phantom
 
-1. Ask binary files from this [repository](https://github.com/sinaamirrajab/LGE_CMRI_Simulation)
+1. Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
+	After downloading, extract the contents and add them to this repository.
 
-2. Adapt the MRXCAT parameters in [MRXCAT_PHANTOM_LGE/lge_par.py](pymrzeroxcat/MRXCAT_PHANTOM_LGE/lge_par.py) to your needs. 
+2. Adapt the MRXCAT tissues parameters in [pymrzeroxcat/tissues.json](pymrzeroxcat/tissues.json) to your needs. 
 	For a first try, go with the predefined parameters.
 
 3. Create a MRzero [Phantom](https://mrzero-core.readthedocs.io/en/latest/api/phantom.html#voxel-grid-phantom) 
-with the command `mrxcat_phantom_lge`.
+with the command `mrxcat_build_static`.
 
 4. Select the first XCAT .bin file from the lge dataset.
    Once the simulation is done, you get the following files:
-   - *_par.mat	MRXCAT parameters
-   - *.npz MRzero parameter file to initialize a **DynamicVoxelPhantom**
-
-5.	To display the produced phantom, run `mrxcat_visualize_phantom` and select
-	the *.npz file in the file selection dialog.
+   - *.npz MRzero parameter file to initialize a **VoxelGridPhantom**
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
 
