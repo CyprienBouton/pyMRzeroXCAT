@@ -67,11 +67,11 @@ These commands all start with `mrxcat_`.
 	For a first try, go with the predefined parameters.
 
 3. Create a MRzero [Phantom](https://mrzero-core.readthedocs.io/en/latest/api/phantom.html#voxel-grid-phantom) 
-with the command `mrxcat_build_static`.
+with the command `mrxcat_build_static`
 
-4. Select the first XCAT .bin file from the lge dataset.
-   Once the simulation is done, you get the following files:
-   - *.npz MRzero parameter file to initialize a **VoxelGridPhantom**
+4. Select a XCAT .bin file to build the MRXCAT phantom.
+
+5. Once the simulation is done, you get a *.npz MRzero parameter file to initialize a **VoxelGridPhantom**
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
 
