@@ -18,7 +18,7 @@ pynufft = "2025.1.1"
 scikit-image = "0.25.2"
 matplotlib = "3.10.1"
 mrtwin = "0.1.3"
-MRzeroCore = {git = "https://github.com/CyprienBouton/MRzero-Core.git", branch = "T1_T2_variable"}
+mrzerocore = "0.4.11"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
