@@ -31,33 +31,6 @@ Python version of the MRXCAT MATLAB repository.
 Several new commands will be added to the virtual environment once the installation is completed.
 These commands all start with `mrxcat_`.
 
-## Run CINE and PERF models 
-	
-1. Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
-	After downloading, extract the contents and add them to this repository.
-
-2. Adapt the MRXCAT parameters in [MRXCAT_CMR_CINE/cine_par.py](pymrzeroxcat/MRXCAT_CMR_CINE/cine_par.py)
- and [MRXCAT_CMR_PERF/perf_par.py](pymrzeroxcat/MRXCAT_CMR_PERF/perf_par.py) to your needs. 
-	For a first try, go with the predefined parameters.
-
-3. Start cine or perfusion MRXCAT by typing
-	`mrxcat_cine` or `mrxcat_perf` into the command line.
-    
-4. 	Select the first XCAT .bin file from the cine and perfusion datasets
-	(cine_act_1.bin for cine, perfusion_act_1.bin for perfusion). 
-	Once the simulation is done, you get the following files:
-	- *.cpx		MRXCAT phantom data
-	- *.msk		XCAT mask data
-	- *.sen		MRXCAT coil sensitivity maps
-	- *.noi		MRXCAT noise only
-	- *_par.mat	MRXCAT parameters
-    
-5. To display the produced phantom, run `mrxcat_visualize` and select
-	the *.cpx file in the file selection dialog.
-
-![Myocardial perfusion](visuals/cine.gif) <br>
-![Cardiac cine](visuals/perf.gif)
-
 ## Build MRzero Phantom
 
 1. Ask cine and perfusion dataset .zip file from https://www.biomed.ee.ethz.ch/mrxcat,
@@ -74,11 +47,6 @@ with the command `mrxcat_build_static`
 5. Once the simulation is done, you get a *.npz MRzero parameter file to initialize a **VoxelGridPhantom**
 
 ![MRzero Phantom](visuals/MRXCAT_Phantom.png)
-
-<p align="center">
-  <img src="visuals/T1_map.gif" alt="Dynamic T1 map" width="49%" />
-  <img src="visuals/T2_map.gif" alt="Dynamic T2 map" width="49%" />
-</p>
 
 ## Example in Jupyter Notebook
 A basic example of a Flash 2D sequence simulation using the MRXCAT phantom in MRzero framework can be found [here](examples/simulate_MRXCAT_Flash2D.ipynb).
