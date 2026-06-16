@@ -25,10 +25,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
-mrxcat_cine = "pymrzeroxcat.MRXCAT_CMR_CINE.mrxcat_cmr_cine:main"
-mrxcat_perf = "pymrzeroxcat.MRXCAT_CMR_PERF.mrxcat_cmr_perf:main"
 mrxcat_build_static ="pymrzeroxcat.MRXCAT_PHANTOM_LGE.build_static_phantom:main"
-mrxcat_build_dynamic="pymrzeroxcat.MRXCAT_PHANTOM_LGE.build_dynamic_phantom:main"
 mrxcat_visualize = "pymrzeroxcat.visualize:main"
 mrxcat_add_infarct = "pymrzeroxcat.MRXCAT_PHANTOM_LGE.add_infarct_segmentation:main"
 mrxcat_visualize_bin = "pymrzeroxcat.MRXCAT_PHANTOM_LGE.visualize_binary:main"
