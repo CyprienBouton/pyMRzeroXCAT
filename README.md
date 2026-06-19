@@ -50,7 +50,3 @@ with the command `mrxcat_build_static`
 
 ## Example in Jupyter Notebook
 A basic example of a Flash 2D sequence simulation using the MRXCAT phantom in MRzero framework can be found [here](examples/simulate_MRXCAT_Flash2D.ipynb).
-
-## References
-If you use this code for research, please cite the following paper 
-[Wissmann L, Santelli C, Segars WP, Kozerke S. MRXCAT: Realistic Numerical Phantoms for Cardiovascular Magnetic Resonance. J Cardiovasc Magn Reson 2014;16:63.](https://pubmed.ncbi.nlm.nih.gov/25204441/)
