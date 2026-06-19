@@ -1,5 +1,5 @@
 # pyMRzeroXCAT
-Python version of the MRXCAT MATLAB repository.
+Repository to create MRzero phantom from XCAT binary files.
 
 # Table of Contents
 
