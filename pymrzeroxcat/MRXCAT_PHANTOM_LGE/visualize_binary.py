@@ -4,8 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
-from pymrzeroxcat.MRXCAT_PHANTOM_LGE.build_static_phantom import get_segmentation
-from pymrzeroxcat.read_mrxcat_raw_data import resolve_log_file
+from pymrzeroxcat.read_mrxcat_raw_data import get_segmentation, resolve_log_file
 
 
 def load_segmentation(bin_path, shape):
